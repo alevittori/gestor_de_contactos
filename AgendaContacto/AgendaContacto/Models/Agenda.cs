@@ -10,22 +10,22 @@ namespace AgendaContacto.Models
     {
         List<Contacto> contactos;
 
-        static Contacto contactoActual;
+       public static Contacto contactoActual;
 
         public Agenda() {
             contactos = new List<Contacto>();
 
         }
 
-        public void AgregarContacto(Contacto persona)
+        public void AgregarContacto()
         {
-            if(persona == null) { return; }
+            if(contactoActual == null) { return; }
 
             // SI DNI REPEDIDO RETORNO
-            if(BuscarContacto(persona) != null) { return; } // aca va validacion por dni repetido
+            if(BuscarContacto(contactoActual) != null) { return; } // aca va validacion por dni repetido
 
             //Si todo ok agrego persona
-            contactos.Add(persona);
+            contactos.Add(contactoActual);
         }
         public bool QuitarContacto(Contacto persona)
         {
