@@ -27,12 +27,34 @@ namespace AgendaContacto.Models
             //Si todo ok agrego persona
             contactos.Add(contactoActual);
         }
+        public void AgregarContacto(Contacto persona)
+        {
+            if (persona == null) { return; }
+
+            // SI DNI REPEDIDO RETORNO
+            if (BuscarContacto(persona) != null) { return; } // aca va validacion por dni repetido
+
+            //Si todo ok agrego persona
+            contactos.Add(persona);
+        }
         public bool QuitarContacto(Contacto persona)
         {
             Contacto buscado = BuscarContacto(persona);
             if(buscado == null) { return false; }
 
             return contactos.Remove(buscado);
+        }
+
+        public Contacto ModificarContacto(Contacto persona)
+        {
+            Contacto aModificar = BuscarContacto(persona);
+            if (aModificar == null) { return null; }
+            aModificar = persona;
+            QuitarContacto(persona);
+            AgregarContacto(aModificar);
+
+            return aModificar;
+
         }
 
         public Contacto BuscarContacto(Contacto persona)

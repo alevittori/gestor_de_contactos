@@ -21,7 +21,7 @@ namespace AgendaContacto
                 miAgenda.AgregarContacto();
                 lbxAgenda.Items.Add(Agenda.contactoActual);
             }
-            catch (Exception ex){ MessageBox.Show(ex.Message, "Ocurrio un Error"); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Ocurrio un Error"); }
             finally
             {
 
@@ -32,6 +32,21 @@ namespace AgendaContacto
                 tbDni.Clear();
 
             }
+        }
+
+        private void btnModificar_Click(object sender, EventArgs e)
+        {
+            Contacto seleccionado = lbxAgenda.SelectedItem as Contacto;
+            if(seleccionado == null)
+            {
+                MessageBox.Show("Debes seleccionar un contacto", "Seleccione un Contacto");
+                return;
+            }
+
+            //VALIDAR QUE LOS CAMPOS NO ESTEN VACIOS
+            Contacto aModificar = new Contacto(tbNombre.Text,tbApellido.Text,tbTel.Text,tbMail.Text,tbDni.Text);
+            miAgenda.ModificarContacto(aModificar);
+            miAgenda.ListarContactos(lbxAgenda);
         }
     }
 }
