@@ -13,8 +13,8 @@ namespace AgendaContacto.Models
         public string Nombre { get => nombre; set => nombre = value; }
         public string Apellido { get => apellido; set => apellido = value; }
         public string Telefono { get => telefono; set => telefono = value; }
-        public string Mail { get => mail; set => mail = value; }
-        public string Dni { get => dni; set => dni = value; }
+        public string Mail { get => mail; set => mail = value; } //validar mail
+        public string Dni { get => dni; set => dni = value; } //validar dni 
 
 
         public Contacto() { }
