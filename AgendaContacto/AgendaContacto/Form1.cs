@@ -88,8 +88,17 @@ namespace AgendaContacto
             Contacto aBuscar = new Contacto();
             aBuscar.Dni = tbBuscar.Text;
             lbxAgenda.Items.Clear();
-            lbxAgenda.Items.Add( miAgenda.BuscarContacto(aBuscar));
-            
+            lbxAgenda.Items.Add(miAgenda.BuscarContacto(aBuscar));
+
+        }
+
+        private void tbBuscar_TextChanged(object sender, EventArgs e)
+        {
+            lbxAgenda.Items.Clear();
+            foreach (var contacto in miAgenda.FiltrarContactos(tbBuscar.Text))
+            {
+                lbxAgenda.Items.Add(contacto);
+            }
         }
     }
 }

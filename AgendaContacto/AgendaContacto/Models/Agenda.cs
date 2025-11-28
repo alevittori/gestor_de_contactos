@@ -88,5 +88,18 @@ namespace AgendaContacto.Models
             }
         }
 
+        public List<Contacto> FiltrarContactos(string texto)
+        {
+            return contactos
+                .Where(c => c.Nombre.Contains(texto, StringComparison.OrdinalIgnoreCase) ||
+                            c.Apellido.Contains(texto, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        public List<Contacto> ObtenerContactos()
+        {
+            return contactos;
+        }
+
     }
 }
