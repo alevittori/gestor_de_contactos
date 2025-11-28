@@ -65,7 +65,7 @@ namespace AgendaContacto.Models
         public Contacto BuscarContacto(Contacto persona)
         {
             Contacto buscado = contactos.Find(c => c.Dni == persona.Dni);
-            if (buscado == null) throw new ContactoNoEncontradoException("No existe un contacto con ese DNI");
+           // if (buscado == null) throw new ContactoNoEncontradoException("No existe un contacto con ese DNI");
             return buscado;
         }
         public void ListarContactos(ListBox listBox)

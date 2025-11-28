@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AgendaContacto.Models
 {
-    internal class Contacto
+    public class Contacto
     {
         string nombre, apellido, telefono, mail, dni;
 

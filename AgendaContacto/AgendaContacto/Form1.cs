@@ -38,7 +38,7 @@ namespace AgendaContacto
 
                 // Lógica de negocio (Agenda valida duplicados y formatos)
 
-                miAgenda.AgregarContacto(tbNombre.Text, tbApellido.Text, tbTel.Text, tbMail.Text, tbDni.Text);
+                miAgenda.AgregarContacto(tbNombre.Text, tbApellido.Text, tbDni.Text, tbMail.Text, tbTel.Text);
                 miAgenda.ListarContactos(lbxAgenda);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "Ocurrio un Error"); }
@@ -59,26 +59,15 @@ namespace AgendaContacto
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(tbNombre.Text) || string.IsNullOrWhiteSpace(tbDni.Text))
+            using (FormEditarContacto frm = new FormEditarContacto(seleccionado))
             {
-                MessageBox.Show("Nombre y DNI son obligatorios");
-                return;
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    // Actualizar contacto en la agenda
+                    miAgenda.ModificarContacto(frm.ContactoEditado);
+                    miAgenda.ListarContactos(lbxAgenda);
+                }
             }
-            if (string.IsNullOrEmpty(tbMail.Text) || string.IsNullOrEmpty(tbTel.Text))
-            {
-                MessageBox.Show("Mail y Telefono no pueden estar vacio");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(tbApellido.Text))
-            {
-                MessageBox.Show("Apellido es Obligatorio");
-                return;
-            }
-
-            Contacto aModificar = new Contacto(tbNombre.Text, tbApellido.Text, tbTel.Text, tbMail.Text, tbDni.Text);
-            miAgenda.ModificarContacto(aModificar);
-            miAgenda.ListarContactos(lbxAgenda);
         }
 
         private void btnEliminar_Click(object sender, EventArgs e)
