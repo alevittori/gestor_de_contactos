@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             gbContacto = new GroupBox();
-            btnEliminar = new Button();
-            btnModificar = new Button();
             btnAgregar = new Button();
             tbMail = new TextBox();
             tbTel = new TextBox();
@@ -42,6 +40,8 @@
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
+            btnEliminar = new Button();
+            btnModificar = new Button();
             btnBuscar = new Button();
             gbAgenda = new GroupBox();
             btnExportar = new Button();
@@ -57,8 +57,6 @@
             // 
             // gbContacto
             // 
-            gbContacto.Controls.Add(btnEliminar);
-            gbContacto.Controls.Add(btnModificar);
             gbContacto.Controls.Add(btnAgregar);
             gbContacto.Controls.Add(tbMail);
             gbContacto.Controls.Add(tbTel);
@@ -72,29 +70,10 @@
             gbContacto.Controls.Add(label1);
             gbContacto.Location = new Point(16, 24);
             gbContacto.Name = "gbContacto";
-            gbContacto.Size = new Size(772, 239);
+            gbContacto.Size = new Size(772, 150);
             gbContacto.TabIndex = 0;
             gbContacto.TabStop = false;
             gbContacto.Text = "Nuevo Contacto";
-            // 
-            // btnEliminar
-            // 
-            btnEliminar.Location = new Point(653, 162);
-            btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(89, 62);
-            btnEliminar.TabIndex = 12;
-            btnEliminar.Text = "Eliminar";
-            btnEliminar.UseVisualStyleBackColor = true;
-            // 
-            // btnModificar
-            // 
-            btnModificar.Location = new Point(653, 96);
-            btnModificar.Name = "btnModificar";
-            btnModificar.Size = new Size(89, 62);
-            btnModificar.TabIndex = 11;
-            btnModificar.Text = "Modificar";
-            btnModificar.UseVisualStyleBackColor = true;
-            btnModificar.Click += btnModificar_Click;
             // 
             // btnAgregar
             // 
@@ -186,6 +165,26 @@
             label1.TabIndex = 0;
             label1.Text = "Apellido";
             // 
+            // btnEliminar
+            // 
+            btnEliminar.Location = new Point(151, 501);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(89, 62);
+            btnEliminar.TabIndex = 12;
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.UseVisualStyleBackColor = true;
+            btnEliminar.Click += btnEliminar_Click;
+            // 
+            // btnModificar
+            // 
+            btnModificar.Location = new Point(34, 501);
+            btnModificar.Name = "btnModificar";
+            btnModificar.Size = new Size(89, 62);
+            btnModificar.TabIndex = 11;
+            btnModificar.Text = "Modificar";
+            btnModificar.UseVisualStyleBackColor = true;
+            btnModificar.Click += btnModificar_Click;
+            // 
             // btnBuscar
             // 
             btnBuscar.Location = new Point(223, 27);
@@ -194,6 +193,7 @@
             btnBuscar.TabIndex = 13;
             btnBuscar.Text = "Buscar";
             btnBuscar.UseVisualStyleBackColor = true;
+            btnBuscar.Click += btnBuscar_Click;
             // 
             // gbAgenda
             // 
@@ -204,7 +204,7 @@
             gbAgenda.Controls.Add(tbBuscar);
             gbAgenda.Controls.Add(label6);
             gbAgenda.Controls.Add(btnBuscar);
-            gbAgenda.Location = new Point(16, 281);
+            gbAgenda.Location = new Point(16, 199);
             gbAgenda.Name = "gbAgenda";
             gbAgenda.Size = new Size(772, 261);
             gbAgenda.TabIndex = 14;
@@ -265,9 +265,9 @@
             // 
             // btnSalir
             // 
-            btnSalir.Location = new Point(669, 587);
+            btnSalir.Location = new Point(669, 596);
             btnSalir.Name = "btnSalir";
-            btnSalir.Size = new Size(89, 37);
+            btnSalir.Size = new Size(89, 48);
             btnSalir.TabIndex = 17;
             btnSalir.Text = "Salir";
             btnSalir.UseVisualStyleBackColor = true;
@@ -277,7 +277,9 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(808, 668);
+            Controls.Add(btnEliminar);
             Controls.Add(btnSalir);
+            Controls.Add(btnModificar);
             Controls.Add(gbAgenda);
             Controls.Add(gbContacto);
             FormBorderStyle = FormBorderStyle.FixedDialog;

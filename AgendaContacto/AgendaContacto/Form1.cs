@@ -16,20 +16,36 @@ namespace AgendaContacto
         {
             try
             {
-                Agenda.contactoActual = new Contacto(tbNombre.Text, tbApellido.Text, tbTel.Text, tbMail.Text, tbDni.Text);
+                //validar que los campos no esten vacios, lo debo hacer en el formulario? o en la clase agenda?
 
-                miAgenda.AgregarContacto();
-                lbxAgenda.Items.Add(Agenda.contactoActual);
+                // Validación de UI
+                if (string.IsNullOrWhiteSpace(tbNombre.Text) || string.IsNullOrWhiteSpace(tbDni.Text))
+                {
+                    MessageBox.Show("Nombre y DNI son obligatorios");
+                    return;
+                }
+                if (string.IsNullOrEmpty(tbMail.Text) || string.IsNullOrEmpty(tbTel.Text))
+                {
+                    MessageBox.Show("Mail y Telefono no pueden estar vacio");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(tbApellido.Text))
+                {
+                    MessageBox.Show("Apellido es Obligatorio");
+                    return;
+                }
+
+                // Lógica de negocio (Agenda valida duplicados y formatos)
+
+                miAgenda.AgregarContacto(tbNombre.Text, tbApellido.Text, tbTel.Text, tbMail.Text, tbDni.Text);
+                miAgenda.ListarContactos(lbxAgenda);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "Ocurrio un Error"); }
             finally
             {
 
-                tbNombre.Clear();
-                tbApellido.Clear();
-                tbTel.Clear();
-                tbMail.Clear();
-                tbDni.Clear();
+                miAgenda.LimpiarTextBox(gbContacto);
 
             }
         }
@@ -37,16 +53,54 @@ namespace AgendaContacto
         private void btnModificar_Click(object sender, EventArgs e)
         {
             Contacto seleccionado = lbxAgenda.SelectedItem as Contacto;
-            if(seleccionado == null)
+            if (seleccionado == null)
             {
                 MessageBox.Show("Debes seleccionar un contacto", "Seleccione un Contacto");
                 return;
             }
 
-            //VALIDAR QUE LOS CAMPOS NO ESTEN VACIOS
-            Contacto aModificar = new Contacto(tbNombre.Text,tbApellido.Text,tbTel.Text,tbMail.Text,tbDni.Text);
+            if (string.IsNullOrWhiteSpace(tbNombre.Text) || string.IsNullOrWhiteSpace(tbDni.Text))
+            {
+                MessageBox.Show("Nombre y DNI son obligatorios");
+                return;
+            }
+            if (string.IsNullOrEmpty(tbMail.Text) || string.IsNullOrEmpty(tbTel.Text))
+            {
+                MessageBox.Show("Mail y Telefono no pueden estar vacio");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(tbApellido.Text))
+            {
+                MessageBox.Show("Apellido es Obligatorio");
+                return;
+            }
+
+            Contacto aModificar = new Contacto(tbNombre.Text, tbApellido.Text, tbTel.Text, tbMail.Text, tbDni.Text);
             miAgenda.ModificarContacto(aModificar);
             miAgenda.ListarContactos(lbxAgenda);
+        }
+
+        private void btnEliminar_Click(object sender, EventArgs e)
+        {
+            Contacto seleccionado = lbxAgenda.SelectedItem as Contacto;
+            if (seleccionado == null)
+            {
+                MessageBox.Show("Debes seleccionar un contacto", "Seleccione un Contacto");
+                return;
+            }
+
+            miAgenda.QuitarContacto(seleccionado);
+            miAgenda.ListarContactos(lbxAgenda);
+        }
+
+        private void btnBuscar_Click(object sender, EventArgs e)
+        {
+            Contacto aBuscar = new Contacto();
+            aBuscar.Dni = tbBuscar.Text;
+            lbxAgenda.Items.Clear();
+            lbxAgenda.Items.Add( miAgenda.BuscarContacto(aBuscar));
+            
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AgendaContacto.Models.Exception;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,29 +11,30 @@ namespace AgendaContacto.Models
     {
         List<Contacto> contactos;
 
-       public static Contacto contactoActual;
+        
 
         public Agenda() {
             contactos = new List<Contacto>();
 
         }
 
-        public void AgregarContacto()
+        public Contacto AgregarContacto(string nom, string ape, string dni, string mail, string tel)
         {
-            if(contactoActual == null) { return; }
+            var nuevo = new Contacto(nom, ape, tel, mail, dni);
 
-            // SI DNI REPEDIDO RETORNO
-            if(BuscarContacto(contactoActual) != null) { return; } // aca va validacion por dni repetido
+            if (BuscarContacto(nuevo) != null)
+                throw new ContactoDuplicadoException("Ya existe un contacto con ese DNI");
 
-            //Si todo ok agrego persona
-            contactos.Add(contactoActual);
+            contactos.Add(nuevo);
+            return nuevo;
         }
         public void AgregarContacto(Contacto persona)
         {
             if (persona == null) { return; }
 
             // SI DNI REPEDIDO RETORNO
-            if (BuscarContacto(persona) != null) { return; } // aca va validacion por dni repetido
+            if (BuscarContacto(persona) != null)
+                throw new ContactoDuplicadoException("Ya existe un contacto con ese DNI");
 
             //Si todo ok agrego persona
             contactos.Add(persona);
@@ -47,20 +49,23 @@ namespace AgendaContacto.Models
 
         public Contacto ModificarContacto(Contacto persona)
         {
-            Contacto aModificar = BuscarContacto(persona);
-            if (aModificar == null) { return null; }
-            aModificar = persona;
-            QuitarContacto(persona);
-            AgregarContacto(aModificar);
+            Contacto existente = BuscarContacto(persona);
+            if (existente == null) throw new ContactoNoEncontradoException("No se encontró el contacto");
 
-            return aModificar;
+            existente.Nombre = persona.Nombre;
+            existente.Apellido = persona.Apellido;
+            existente.Telefono = persona.Telefono;
+            existente.Mail = persona.Mail;
+            // DNI no debería cambiar
+
+            return existente;
 
         }
 
         public Contacto BuscarContacto(Contacto persona)
         {
-            Contacto buscado = contactos.Find(contacto => contacto.Dni == persona.Dni);
-            if (buscado == null) { return null; } //Lanzar excepcion ContactoNoEncontradoException
+            Contacto buscado = contactos.Find(c => c.Dni == persona.Dni);
+            if (buscado == null) throw new ContactoNoEncontradoException("No existe un contacto con ese DNI");
             return buscado;
         }
         public void ListarContactos(ListBox listBox)
@@ -71,5 +76,17 @@ namespace AgendaContacto.Models
                 listBox.Items.Add(c);
             }
         }
+
+        public void LimpiarTextBox(Control contenedor)
+        {
+            foreach (Control ctrl in contenedor.Controls)
+            {
+                if (ctrl is TextBox tb)
+                    tb.Clear();
+                else
+                    LimpiarTextBox(ctrl); // sigue buscando en sub-contenedores
+            }
+        }
+
     }
 }
