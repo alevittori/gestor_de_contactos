@@ -11,13 +11,14 @@ namespace AgendaContacto.Models
     internal class Agenda
     {
         List<Contacto> contactos;
+        List<RegistroErrorImportacion> importacionesErroneas;
 
         string connectionString = "Server=localhost;Database=agendadb;Uid=root;Pwd=1310Alevitt-;";
 
 
         public Agenda() {
             contactos = new List<Contacto>();
-
+            importacionesErroneas = new List<RegistroErrorImportacion>();
         }
 
         public Contacto AgregarContacto(string nom, string ape, string dni, string mail, string tel)
@@ -214,5 +215,71 @@ namespace AgendaContacto.Models
                 }
             }
         }
-    }
+
+        //FORMATO nombre;apellido;tel;mail;dni
+        public void ImportarContactosEnCSV(FileStream fs)
+        {
+            using (StreamReader sr = new StreamReader(fs))
+            {
+                string line;
+                while (!sr.EndOfStream)
+                {
+                    line = sr.ReadLine();
+                    string[] grupo = line.Split(';');
+
+                    // Validación de formato
+                    if (grupo.Length != 5)
+                    {
+                        importacionesErroneas.Add(new RegistroErrorImportacion
+                        {
+                            Linea = line,
+                            Motivo = "Formato inválido (se esperaban 5 campos)"
+                        }
+                        );
+                        continue;
+                    }
+
+                    try
+                    {
+                        Contacto cImportado = new Contacto
+                        {
+                            Nombre = grupo[0],
+                            Apellido = grupo[1],
+                            Telefono = grupo[2],
+                            Mail = grupo[3],
+                            Dni = grupo[4]
+                        };
+
+                        AgregarContacto(cImportado);
+                    }
+                    catch (ContactoDuplicadoException)
+                    {
+                        importacionesErroneas.Add(new RegistroErrorImportacion
+                        {
+                            Linea = line,
+                            Motivo = "Duplicado"
+                        }
+                        );
+                        continue;
+                    }
+                }
+            }
+
+        }
+
+        public void ExportarContactosEnCSV(FileStream fs)
+        {
+            using (StreamWriter sw = new StreamWriter(fs)) 
+            {
+                foreach (Contacto c in contactos)
+                {
+                    sw.WriteLine(c.ExportarDatosEnCSV());
+                }
+            }
+        }
+    
+    
+    
+    
+    }// FIN CLASE AGENDA
 }

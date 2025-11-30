@@ -31,7 +31,12 @@ namespace AgendaContacto.Models
 
         public override string ToString()
         {
-            return $"{Nombre};{Apellido};{Telefono}";
+            return $"{Nombre} {Apellido}, Tel: {Telefono}";
+        }
+
+        public string ExportarDatosEnCSV()
+        {
+            return $"{Nombre};{Apellido};{Telefono};{Mail};{Dni}";
         }
     }
 }
