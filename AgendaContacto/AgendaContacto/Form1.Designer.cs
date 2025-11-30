@@ -44,13 +44,14 @@
             btnModificar = new Button();
             btnBuscar = new Button();
             gbAgenda = new GroupBox();
+            groupBox1 = new GroupBox();
+            label6 = new Label();
+            tbBuscar = new TextBox();
             btnExportar = new Button();
             lbxAgenda = new ListBox();
             btnImportar = new Button();
             btnGuardar = new Button();
-            tbBuscar = new TextBox();
             btnSalir = new Button();
-            groupBox1 = new GroupBox();
             gbContacto.SuspendLayout();
             gbAgenda.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -210,6 +211,35 @@
             gbAgenda.TabStop = false;
             gbAgenda.Text = "Agenda";
             // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(label6);
+            groupBox1.Controls.Add(tbBuscar);
+            groupBox1.Controls.Add(btnBuscar);
+            groupBox1.Location = new Point(18, 22);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(564, 66);
+            groupBox1.TabIndex = 17;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Buscar";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(21, 30);
+            label6.Name = "label6";
+            label6.Size = new Size(108, 15);
+            label6.TabIndex = 16;
+            label6.Text = "Nombre o Apellido";
+            // 
+            // tbBuscar
+            // 
+            tbBuscar.Location = new Point(151, 26);
+            tbBuscar.Name = "tbBuscar";
+            tbBuscar.Size = new Size(240, 23);
+            tbBuscar.TabIndex = 15;
+            tbBuscar.TextChanged += tbBuscar_TextChanged;
+            // 
             // btnExportar
             // 
             btnExportar.Location = new Point(653, 174);
@@ -245,14 +275,7 @@
             btnGuardar.TabIndex = 13;
             btnGuardar.Text = "Guardar Agenda";
             btnGuardar.UseVisualStyleBackColor = true;
-            // 
-            // tbBuscar
-            // 
-            tbBuscar.Location = new Point(54, 26);
-            tbBuscar.Name = "tbBuscar";
-            tbBuscar.Size = new Size(240, 23);
-            tbBuscar.TabIndex = 15;
-            tbBuscar.TextChanged += tbBuscar_TextChanged;
+            btnGuardar.Click += btnGuardar_Click;
             // 
             // btnSalir
             // 
@@ -262,17 +285,6 @@
             btnSalir.TabIndex = 17;
             btnSalir.Text = "Salir";
             btnSalir.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            groupBox1.Controls.Add(tbBuscar);
-            groupBox1.Controls.Add(btnBuscar);
-            groupBox1.Location = new Point(18, 22);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(564, 66);
-            groupBox1.TabIndex = 17;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Buscar";
             // 
             // Form1
             // 
@@ -320,5 +332,6 @@
         private TextBox tbBuscar;
         private Button btnSalir;
         private GroupBox groupBox1;
+        private Label label6;
     }
 }

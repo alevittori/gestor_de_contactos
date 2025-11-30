@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace AgendaContacto.Models
 {
@@ -11,7 +12,8 @@ namespace AgendaContacto.Models
     {
         List<Contacto> contactos;
 
-        
+        string connectionString = "Server=localhost;Database=agendadb;Uid=root;Pwd=1310Alevitt-;";
+
 
         public Agenda() {
             contactos = new List<Contacto>();
@@ -101,5 +103,116 @@ namespace AgendaContacto.Models
             return contactos;
         }
 
+        public void GuardarAgenda()
+        {
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        foreach (var c in contactos)
+                        {
+                            // Validaciones básicas
+                            if (string.IsNullOrWhiteSpace(c.Nombre) || string.IsNullOrWhiteSpace(c.Dni))
+                                throw new ArgumentException("Nombre y DNI son obligatorios");
+
+                            if (!long.TryParse(c.Dni, out _))
+                                throw new DniInvalidoException("El DNI debe ser numérico");
+
+                            if (string.IsNullOrWhiteSpace(c.Mail) || !c.Mail.Contains("@"))
+                                throw new EmailInvalidoException("El email no tiene un formato válido");
+
+                            // Validación de duplicado en la base
+                            string checkQuery = "SELECT COUNT(*) FROM Contactos WHERE Dni = @Dni";
+                            using (var checkCmd = new MySqlCommand(checkQuery, conn, transaction))
+                            {
+                                checkCmd.Parameters.AddWithValue("@Dni", c.Dni);
+                                long count = (long)checkCmd.ExecuteScalar();
+
+                                if (count > 0)
+                                {
+                                    // Podés elegir: lanzar excepción o simplemente saltar este contacto
+                                    throw new ContactoDuplicadoException($"El contacto con DNI {c.Dni} ya existe en la base de datos");
+                                }
+                            }
+
+                            // Insertar contacto
+                            string insertQuery = @"INSERT INTO Contactos (Nombre, Apellido, Telefono, Mail, Dni) 
+                                           VALUES (@Nombre, @Apellido, @Telefono, @Mail, @Dni)";
+                            using (var insertCmd = new MySqlCommand(insertQuery, conn, transaction))
+                            {
+                                insertCmd.Parameters.AddWithValue("@Nombre", c.Nombre);
+                                insertCmd.Parameters.AddWithValue("@Apellido", c.Apellido);
+                                insertCmd.Parameters.AddWithValue("@Telefono", c.Telefono);
+                                insertCmd.Parameters.AddWithValue("@Mail", c.Mail);
+                                insertCmd.Parameters.AddWithValue("@Dni", c.Dni);
+
+                                insertCmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit(); // confirma todos los inserts
+                    }
+                    catch
+                    {
+                        transaction.Rollback(); // si algo falla, no se guarda nada
+                        throw;
+                    }
+                }
+            }
+        }
+        public void GuardarContactoEnDB(Contacto c)
+        {
+            // Validación básica en C#: nombre y DNI no vacíos
+            if (string.IsNullOrWhiteSpace(c.Nombre) || string.IsNullOrWhiteSpace(c.Dni))
+                throw new ArgumentException("Nombre y DNI son obligatorios");
+
+            // Validación de formato de DNI (aunque sea VARCHAR en la DB, lo tratamos como numérico)
+            if (!long.TryParse(c.Dni, out _))
+                throw new DniInvalidoException("El DNI debe ser numérico");
+
+            // Validación de email simple
+            if (string.IsNullOrWhiteSpace(c.Mail) || !c.Mail.Contains("@"))
+                throw new EmailInvalidoException("El email no tiene un formato válido");
+
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // Primero verificamos si ya existe el contacto por DNI
+                string checkQuery = "SELECT COUNT(*) FROM Contactos WHERE Dni = @Dni";
+                using (var checkCmd = new MySqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@Dni", c.Dni);
+                    long count = (long)checkCmd.ExecuteScalar();
+
+                    if (count > 0)
+                        throw new ContactoDuplicadoException("Ya existe un contacto con ese DNI en la base de datos");
+                }
+
+                // Si no existe, lo insertamos
+                string insertQuery = @"INSERT INTO Contactos (Nombre, Apellido, Telefono, Mail, Dni) 
+                               VALUES (@Nombre, @Apellido, @Telefono, @Mail, @Dni)";
+                using (var insertCmd = new MySqlCommand(insertQuery, conn))
+                {
+                    insertCmd.Parameters.AddWithValue("@Nombre", c.Nombre);
+                    insertCmd.Parameters.AddWithValue("@Apellido", c.Apellido);
+                    insertCmd.Parameters.AddWithValue("@Telefono", c.Telefono);
+                    insertCmd.Parameters.AddWithValue("@Mail", c.Mail);
+                    insertCmd.Parameters.AddWithValue("@Dni", c.Dni);
+
+                    try
+                    {
+                        insertCmd.ExecuteNonQuery();
+                    }
+                    catch (MySqlException ex) when (ex.Number == 1062) // error de clave duplicada
+                    {
+                        throw new ContactoDuplicadoException("El DNI ya existe en la base de datos");
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 using AgendaContacto.Models;
+using MySql.Data.MySqlClient;
 
 namespace AgendaContacto
 {
@@ -98,6 +99,20 @@ namespace AgendaContacto
             foreach (var contacto in miAgenda.FiltrarContactos(tbBuscar.Text))
             {
                 lbxAgenda.Items.Add(contacto);
+            }
+        }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                miAgenda.GuardarAgenda();
+
+
+
+            }catch(MySqlException ex)
+            {
+                MessageBox.Show(ex.Message, "error");
             }
         }
     }
